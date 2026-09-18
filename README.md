@@ -1,10 +1,27 @@
-# CSPC Lab A
-# Report
+# CSPC - Computer Science for Physics and Chemistry
 
+My coursework repository. Each practical is under PW1/Lab A/.
 
-- **Tests:** All 3 pytest unit tests passed (`test_starts_at_N0`, `test_rejects_negative_rate`, `test_matches_law`).
-- **Speed Performance:**
-  - Pure Python loop time: 3.7854 seconds
-  - NumPy vectorized time: 0.0004 seconds
-  - Speed-up factor: NumPy is 9948.35x faster.
-- **Conclusion:** Vectorized operations with NumPy process large datasets much faster than standard Python loops.
+## Setup
+
+Create the environment for a given lab:
+`conda env create -f PW1/Lab A/environment.yml`
+`conda activate cspc`
+
+---
+
+## PW1 - Lab A: Reproducible Foundations
+
+**What I built:**
+- A radioactive decay simulation in Python using both explicit loops and vectorized NumPy operations, with unit tests in pytest and Git version control.
+
+**Speed comparison (loop vs NumPy):**
+- loop : 3.7854 s
+- numpy : 0.0004 s
+- speed-up: 9948.35 x faster
+
+**Tests:** all passing? yes
+
+**Conclusion:**
+- Vectorized array operations with NumPy process large datasets drastically faster than standard Python loops.
+- Setting up an isolated Conda environment and automated pytest unit tests ensures code reproducibility across different environments.
