@@ -24,4 +24,17 @@ Create the environment for a given lab:
 
 **Conclusion:**
 - Vectorized array operations with NumPy process large datasets drastically faster than standard Python loops.
-- Setting up an isolated Conda environment and automated pytest unit tests ensures code reproducibility across different environments.
+- Setting up an isolated Conda environment and automated pytest unit tests ensures code reproducibility across different environments. 
+
+
+
+------
+
+## PW1 - Lab B: Data, Plotting, and Automation
+
+**Data Summary & Comparison:**
+- The observed data follows an exponential decay trend over time.
+- Based on the side-by-side plot, the observed data closely matches the analytical exponential decay curve, showing high physical accuracy.
+
+**Snakemake Pipeline:**
+- The Snakemake pipeline automates figure generation by checking file timestamps and only re-executing `plot.py` when input files (`decay_observed.csv` or `plot.py`) have changed.
