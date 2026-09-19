@@ -34,7 +34,7 @@ Create the environment for a given lab:
 
 **Data Summary & Comparison:**
 - The observed data follows an exponential decay trend over time.
-- Based on the side-by-side plot, the observed data closely matches the analytical exponential decay curve, showing high physical accuracy.
+- Based on the side-by-side plot, the observed data closely matches the analytical exponential decay curve ($N_0 e^{-\lambda t}$), showing high physical accuracy.
 
 **Snakemake Pipeline:**
 - The Snakemake pipeline automates figure generation by checking file timestamps and only re-executing `plot.py` when input files (`decay_observed.csv` or `plot.py`) have changed.
