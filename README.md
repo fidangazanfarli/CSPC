@@ -38,3 +38,16 @@ Create the environment for a given lab:
 
 **Snakemake Pipeline:**
 - The Snakemake pipeline automates figure generation by checking file timestamps and only re-executing `plot.py` when input files (`decay_observed.csv` or `plot.py`) have changed.
+
+
+
+---
+
+## PW2 - Lab A: Motion from Tracking Data
+
+**Results:**
+- **Mean Acceleration:** -8.58 m/s² (close to expected free-fall acceleration)[cite: 7].
+
+- **Noise Analysis (Part 3):** Numerical differentiation amplifies high-frequency measurement noise (resulting in a high acceleration standard deviation of ~28.72 m/s²), because dividing small noise fluctuations by small time steps ($\Delta t$) creates huge variations[cite: 8]
+
+- **Integration Recovery (Part 4):** Integration acts as a smoother by summing values over time, which causes random noise to cancel out and successfully recovers the original position trajectory to within ~0.78 meters[cite: 8].
