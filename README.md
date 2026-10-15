@@ -51,3 +51,22 @@ Create the environment for a given lab:
 - **Noise Analysis (Part 3):** Numerical differentiation amplifies high-frequency measurement noise (resulting in a high acceleration standard deviation of ~28.72 m/s²), because dividing small noise fluctuations by small time steps ($\Delta t$) creates huge variations[cite: 8]
 
 - **Integration Recovery (Part 4):** Integration acts as a smoother by summing values over time, which causes random noise to cancel out and successfully recovers the original position trajectory to within ~0.78 meters[cite: 8].
+
+---
+
+## PW2 - Lab B: Optimization in Chemistry
+
+**1. Optimization Methods Comparison (Part 2):**
+- On simple convex functions ($f(x)=(x-3)^2+1$), Gradient Descent, Newton's method, and SLSQP all easily converge to $x = 3.0$[cite: 14].
+- On complex/non-convex functions ($g(x)=x^4-3x^2+x+5$), the starting point and method matter significantly: Newton's method solves $g'(x)=0$ and can land on local maxima/saddle points ($g'' < 0$) depending on initialization, while SLSQP and Gradient Descent follow downhill paths toward local or global minima[cite: 14].
+
+**2. Reaction Kinetics Fitting (Part 3):**
+- Fitted rate constant: **$k = 0.2618 \text{ s}^{-1}$**[cite: 15].
+- Minimizing squared residual error accurately recovers the exponential decay kinetics curve[cite: 15].
+
+**3. Chemical Equilibrium (Part 4):**
+- Extent of reaction $x \approx 0.6639$ mol (Newton and SLSQP agree)[cite: 15].
+- Equilibrium amounts: $\text{H}_2 = 0.3362 \text{ mol}$, $\text{I}_2 = 0.3362 \text{ mol}$, $\text{HI} = 1.3277 \text{ mol}$[cite: 15].
+
+**4. Titration Equivalence Point (Part 5 - Bonus):**
+- Equivalence point detected at **$V = 50.00 \text{ mL}$** where the derivative $\frac{d(\text{pH})}{dV}$ peaks.
