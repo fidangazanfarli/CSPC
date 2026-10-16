@@ -95,4 +95,3 @@ Normality was tested using Q-Q plots (`distributions.png`)[cite: 83, 85] and for
 3. **`trestbps`:** **Not Normal** ($W = 0.9665, p = 1.80 \times 10^{-6} < 0.05$). Right-skewed distribution[cite: 85, 100].
 4. **`thalach`:** **Not Normal** ($W = 0.9765, p = 7.00 \times 10^{-5} < 0.05$). Left-skewed distribution[cite: 85, 100].
 
-> **Significance for Session 2:** Because all variables reject strict normality under Shapiro-Wilk ($p < 0.05$), non-parametric tests (such as the **Mann-Whitney U test**) should be preferred or evaluated alongside two-sample t-tests when comparing groups in Session 2[cite: 98, 99, 100].
