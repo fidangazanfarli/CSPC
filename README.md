@@ -70,3 +70,29 @@ Create the environment for a given lab:
 
 **4. Titration Equivalence Point (Part 5 - Bonus):**
 - Equivalence point detected at **$V = 50.00 \text{ mL}$** where the derivative $\frac{d(\text{pH})}{dV}$ peaks.
+
+
+
+---
+
+## PW3 - Session 1: Data Characterisation & Normality Testing
+
+### 1. Dataset Summary
+- **Dataset:** Cleveland Heart Disease Dataset (303 patients)[cite: 115].
+- **Features Analyzed:** `age`, `chol` (serum cholesterol), `trestbps` (resting blood pressure), `thalach` (maximum heart rate)[cite: 115].
+
+### 2. Variable Shapes & Distributions (`distributions.png`)
+- **`age`:** Roughly bell-shaped and symmetric, centered around a mean of ~54.4 years (range: 29–77 years)[cite: 77, 83].
+- **`chol`:** Strongly right-skewed with a prominent right tail due to extreme high cholesterol outliers (max: 564.0 mg/dL)[cite: 74, 83].
+- **`trestbps`:** Moderately right-skewed, peaking near 120–130 mmHg with occasional severe hypertension readings up to 200 mmHg[cite: 83].
+- **`thalach`:** Slightly left-skewed, peaking near 150–160 bpm[cite: 83].
+
+### 3. Normality Check Verdicts
+Normality was tested using Q-Q plots (`distributions.png`)[cite: 83, 85] and formal statistical testing via the Shapiro-Wilk test ($\alpha = 0.05$, $H_0$: data is normally distributed)[cite: 100]:
+
+1. **`age`:** **Not Normal** ($W = 0.9865, p = 6.07 \times 10^{-3} < 0.05$). Visually symmetric, but slight deviation from ideal normality[cite: 85, 100].
+2. **`chol`:** **Not Normal** ($W = 0.9473, p = 5.91 \times 10^{-9} < 0.05$). Strong right-skewness and heavy tail[cite: 85, 100].
+3. **`trestbps`:** **Not Normal** ($W = 0.9665, p = 1.80 \times 10^{-6} < 0.05$). Right-skewed distribution[cite: 85, 100].
+4. **`thalach`:** **Not Normal** ($W = 0.9765, p = 7.00 \times 10^{-5} < 0.05$). Left-skewed distribution[cite: 85, 100].
+
+> **Significance for Session 2:** Because all variables reject strict normality under Shapiro-Wilk ($p < 0.05$), non-parametric tests (such as the **Mann-Whitney U test**) should be preferred or evaluated alongside two-sample t-tests when comparing groups in Session 2[cite: 98, 99, 100].
