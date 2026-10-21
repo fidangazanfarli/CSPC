@@ -95,3 +95,41 @@ Normality was tested using Q-Q plots (`distributions.png`)[cite: 83, 85] and for
 3. **`trestbps`:** **Not Normal** ($W = 0.9665, p = 1.80 \times 10^{-6} < 0.05$). Right-skewed distribution[cite: 85, 100].
 4. **`thalach`:** **Not Normal** ($W = 0.9765, p = 7.00 \times 10^{-5} < 0.05$). Left-skewed distribution[cite: 85, 100].
 
+
+
+
+
+
+---
+
+## PW3 - Session 2: Statistical Inference & Correlation vs. Causation
+
+### 1. Heart Rate Comparison: Healthy vs. Disease (Task 4)
+- **Question:** Do heart-disease patients reach a different maximum heart rate (`thalach`) than healthy ones?
+- **Group Statistics:**
+  - Healthy Patients (`target = 0`): Mean = **158.38 bpm**, SE = **±1.50 bpm** ($n = 164$).
+  - Disease Patients (`target = 1`): Mean = **139.26 bpm**, SE = **±1.92 bpm** ($n = 139$).
+- **Hypothesis Testing:**
+  - Two-sample t-test: $t = 7.9636$, $p = 3.46 \times 10^{-14}$.
+  - Mann-Whitney U test: $U = 16989.5$, $p = 1.86 \times 10^{-13}$.
+- **Conclusion:** We strongly reject the null hypothesis $H_0$ ($p \ll 0.05$). Healthy patients achieve a significantly higher maximum heart rate during exercise than heart disease patients. The bar plot with standard error bars (`thalach_comparison.png`) clearly shows non-overlapping uncertainty bounds.
+
+### 2. Age vs. Maximum Heart Rate Relationship (Task 5)
+- **Pearson Correlation:** **$r = -0.3938$** ($p = 1.11 \times 10^{-12}$).
+- **Interpretation:** There is a strong negative correlation between age and maximum heart rate (`age_vs_thalach.png`). As age increases, achievable peak heart rate decreases steadily by approximately 1 bpm per year.
+
+---
+
+### 3. Chemical-Exposure Mystery: Confounder Reveal (Tasks 6 & 7)
+
+#### Naive Analysis (Task 6)
+- **Benzene vs. Malignancy:** $r = 0.3847$ ($p = 1.28 \times 10^{-36}$).
+- **Cadmium vs. Malignancy:** **$r = 0.8800$** ($p \approx 0.00$).
+- **Naive Conclusion:** Taken at face value, cadmium appears to be the primary cause of tumour malignancy because of its overwhelmingly strong correlation.
+
+#### Controlled Confounder Analysis (Task 7)
+- **Identifying the Confounder:** `cadmium` and `pollution_index` are nearly perfectly correlated ($r = 0.9819$), meaning higher industrial pollution environments simply carry higher cadmium levels.
+- **Controlling for Pollution:** When restricting analysis to a narrow band of patients with similar pollution exposure ($\text{pollution\_index} \in [47.5, 52.5]$):
+  - **Cadmium vs. Malignancy:** $r_{\text{controlled}} = -0.2407$ ($p = 0.0857 > 0.05$, **loses statistical significance**).
+  - **Benzene vs. Malignancy:** **$r_{\text{controlled}} = 0.6814$** ($p = 2.70 \times 10^{-8} \ll 0.05$, **remains strongly positive and highly significant**).
+- **Causal Reveal:** **Benzene is the true causal agent** driving malignancy. Cadmium only looked guilty because it was heavily confounded by overall industrial pollution. Controlling for the environmental confounder exposed cadmium as innocent and confirmed benzene as the true cause (`chemical_causation.png`).
