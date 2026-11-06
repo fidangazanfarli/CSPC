@@ -188,3 +188,30 @@ Based on Decision Tree Gini importance (feature_importance.png):
 2. **age (34.01%)**: Curing time required for chemical hydration.
 3. **water (13.43%)**: Controls the water-to-cement ratio.
 - **Key Scientific Finding:** **Cement content and curing age together account for 75% of concrete compressive strength.**
+
+### 4. Linear Regression (Task A4)
+- **Method:** Fitted a multi-variable linear regression model (`LinearRegression()`) to predict concrete compressive strength.
+- **Metrics (Cleaned Data):**
+  - **Train RMSE:** $10.519 \text{ MPa}$ | **Test RMSE:** $9.796 \text{ MPa}$ | **Test MAE:** $7.746 \text{ MPa}$
+  - **Train $R^2$:** $0.611$ | **Train Adjusted $R^2$:** $0.607$ | **Test $R^2$:** $0.628$
+- **Residual Analysis (`residuals_vs_age.png`):**
+  - Plotting test residuals against age on a logarithmic scale reveals a distinct systematic curvature. 
+  - **Scientific Takeaway:** A systematic pattern in residuals proves that the relationship between concrete age/ingredients and compressive strength is **non-linear**. A straight linear hyperplane cannot capture the true asymptotic chemical hydration kinetics over time.
+
+### 5. Polynomial Regression - Degrees 1 to 4 (Task A5)
+- **Experiment:** Expanded feature spaces using `PolynomialFeatures` combined with `StandardScaler` and `LinearRegression` pipelines.
+- **Results Table:**
+
+| Degree | Features ($p$) | Train RMSE | Test RMSE | Train $R^2$ | Train Adjusted $R^2$ | Test $R^2$ |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **1** | 8 | 10.519 | 9.796 | 0.611 | 0.607 | 0.628 |
+| **2** | 44 | 7.287 | 7.455 | 0.813 | 0.803 | 0.784 |
+| **3** | 164 | 4.432 | 6.423 | 0.931 | 0.914 | 0.840 |
+| **4** | 494 | 2.338 | 30.165 | 0.981 | 0.952 | -2.531 |
+
+- **Which degree would you choose, and why?**
+  - **Degree 3** is the optimal choice. It achieves the best generalization performance with a **Test RMSE of $6.423 \text{ MPa}$** and **Test $R^2$ of $0.840$**, capturing the non-linear physics without exploding in complexity.
+- **What happens at Degree 4?**
+  - With $p = 494$ features for only $n = 804$ training rows, the model severely **overfits**. While Training RMSE drops to a pristine $2.338 \text{ MPa}$, the test error skyrockets (Test RMSE $= 30.165 \text{ MPa}$, Test $R^2 = -2.531$). The model learned noise rather than underlying patterns.
+- **Does Adjusted $R^2$ alone protect you from this?**
+  - **No.** Although adjusted $R^2$ applies a penalty for model complexity ($p$), it still evaluates training data only. It cannot predict how a heavily parameterized model will fail when confronted with completely unseen test data. An independent test set split is strictly necessary.
