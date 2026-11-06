@@ -140,29 +140,51 @@ Normality was tested using Q-Q plots (`distributions.png`)[cite: 83, 85] and for
 ## PW4 - Session A: Supervised Machine Learning
 
 ### 1. Concrete Dataset Setup & Units (Task A1)
-- **`cement`**: Amount of cement ($\text{kg/m}^3$)
-- **`slag`**: Blast furnace slag ($\text{kg/m}^3$)
-- **`ash`**: Fly ash ($\text{kg/m}^3$)
-- **`water`**: Water ($\text{kg/m}^3$)
-- **`superplastic`**: Superplasticizer ($\text{kg/m}^3$)
-- **`coarse_agg`**: Coarse aggregate ($\text{kg/m}^3$)
-- **`fine_agg`**: Fine aggregate ($\text{kg/m}^3$)
-- **`age`**: Curing time ($\text{days}$)
-- **`strength`**: Compressive strength ($\text{MPa}$, Target variable)
+- **cement**: Amount of cement (kg/m^3)
+- **slag**: Blast furnace slag (kg/m^3)
+- **ash**: Fly ash (kg/m^3)
+- **water**: Water (kg/m^3)
+- **superplastic**: Superplasticizer (kg/m^3)
+- **coarse_agg**: Coarse aggregate (kg/m^3)
+- **fine_agg**: Fine aggregate (kg/m^3)
+- **age**: Curing time (days)
+- **strength**: Compressive strength (MPa, Target variable)
 
-### 2. Regression Performance (Predicting Compressive Strength)
-- **KNN Regressor ($k=5$):** $\text{RMSE} = 8.512 \text{ MPa}$, $R^2 = 0.719$
-- **Decision Tree Regressor ($\text{max\_depth}=5$):** $\text{RMSE} = 9.648 \text{ MPa}$, $R^2 = 0.639$
-- **Conclusion:** KNN performed better for regression due to standard feature scaling, which handles continuous recipe ratios effectively (`regression_fit.png`).
+### 2. Data Cleaning & Inspection (Task A2)
+- **Duplicates & Missing Values:** 
+  - Initial rows: 1,030
+  - Duplicate rows removed: **25**
+  - Final unique rows: **1,005**
+  - Missing values: **0**
+- **Why Removing Duplicates Before Splitting Matters:** If identical rows are kept prior to an 80/20 split, exact duplicate records can simultaneously end up in both the training set and the testing set. This leads to *data leakage*, causing the model to memorize samples during training and score artificially high on the test set, creating overly optimistic performance metrics.
+- **Numerical Scales (df.describe()):** 
+  - Features like `coarse_agg` (mean ~974.4) and `fine_agg` (mean ~772.7) operate on scales in the hundreds.
+  - Features like `superplastic` (mean ~6.03) and `age` (mean ~45.9) operate on much smaller numerical scales.
+  - *Implication:* Algorithms sensitive to feature distance (such as KNN) require standard scaling (StandardScaler) so that large-scale variables do not dominate distance computations.
+- **Visual Trends (strength_vs_inputs.png):**
+  - **Strength vs. Cement:** Shows a strong positive linear relationship; higher cement concentration per cubic meter consistently yields higher compressive strength.
+  - **Strength vs. Age:** Demonstrates rapid strength development during early curing days, leveling out into a wider spread at 365 days.
 
-### 3. Classification Performance (Strength Grade $\ge 35 \text{ MPa}$)
+### 3. Train-Test Split (Task A3)
+- Executed via `train_test_split(X, y, test_size=0.2, random_state=42)`.
+- **Split Sizes:**
+  - Training Set: **804 rows** (80%)
+  - Testing Set: **201 rows** (20%)
+- `random_state=42` ensures row shuffling is fixed and fully reproducible across all program executions.
+
+### 4. Regression Performance (Predicting Compressive Strength)
+- **KNN Regressor (k = 5):** RMSE = 8.512 MPa, R^2 = 0.719
+- **Decision Tree Regressor (max_depth = 5):** RMSE = 9.648 MPa, R^2 = 0.639
+- **Conclusion:** KNN performed better for regression due to standard feature scaling, which handles continuous recipe ratios effectively (regression_fit.png).
+
+### 5. Classification Performance (Strength Grade >= 35 MPa)
 - **KNN Classifier Accuracy:** **83.01%**
 - **Decision Tree Classifier Accuracy:** **82.52%**
-- **Conclusion:** Both classifiers achieve strong accuracy when predicting whether concrete meets the structural $35 \text{ MPa}$ threshold (`confusion_matrix.png`).
+- **Conclusion:** Both classifiers achieve strong accuracy when predicting whether concrete meets the structural 35 MPa threshold (confusion_matrix.png).
 
-### 4. Feature Importance Analysis
-Based on Decision Tree Gini importance (`feature_importance.png`):
-1. **`cement` ($40.99\%$)**: Primary binding ingredient.
-2. **`age` ($34.01\%$)**: Curing time required for chemical hydration.
-3. **`water` ($13.43\%$)**: Controls the water-to-cement ratio.
-- **Key Scientific Finding:** **Cement content and curing age together account for $75\%$ of concrete compressive strength.**
+### 6. Feature Importance Analysis
+Based on Decision Tree Gini importance (feature_importance.png):
+1. **cement (40.99%)**: Primary binding ingredient.
+2. **age (34.01%)**: Curing time required for chemical hydration.
+3. **water (13.43%)**: Controls the water-to-cement ratio.
+- **Key Scientific Finding:** **Cement content and curing age together account for 75% of concrete compressive strength.**
