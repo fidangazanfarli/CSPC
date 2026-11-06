@@ -6,6 +6,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsRegressor, KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier, export_text
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, accuracy_score
 
 # 1. Load data
 df = pd.read_csv("data/concrete.csv")
@@ -145,3 +148,106 @@ for deg in [1, 2, 3, 4]:
 
 df_a5 = pd.DataFrame(results)
 print(df_a5.to_string(index=False))
+
+
+"""
+PW4 Session A -- Task A6: KNN and Decision Tree Classification (>= 40 MPa)
+"""
+# 1. Define Binary Classification Target (Strength >= 40 MPa)
+y_class = (df["strength"] >= 40.0).astype(int)
+
+# Stratified split to keep class proportions identical
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y_class, test_size=0.2, random_state=42, stratify=y_class
+)
+
+print("\n=== Task A6: KNN Classifier Sweep ===")
+k_values = [1, 3, 5, 7, 15, 25, 51, 101]
+knn_train_acc = []
+knn_test_acc = []
+
+for k in k_values:
+    model = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=k))
+    model.fit(X_train, y_train)
+    knn_train_acc.append(accuracy_score(y_train, model.predict(X_train)))
+    knn_test_acc.append(accuracy_score(y_test, model.predict(X_test)))
+
+# Plot KNN accuracy vs K
+plt.figure(figsize=(8, 5))
+plt.plot(k_values, knn_train_acc, marker='o', label="Train Accuracy")
+plt.plot(k_values, knn_test_acc, marker='s', label="Test Accuracy")
+plt.xscale("log")
+plt.xlabel("K (number of neighbors, log scale)")
+plt.ylabel("Accuracy")
+plt.title("KNN Accuracy vs. K (Threshold >= 40 MPa)")
+plt.legend()
+plt.grid(True, which="both", linestyle="--", alpha=0.5)
+plt.tight_layout()
+plt.savefig("knn_accuracy_vs_k.png")
+print("[+] Saved knn_accuracy_vs_k.png")
+
+# Optimal K comparison (With vs Without Scaler)
+optimal_k = 5
+model_scaled = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=optimal_k))
+model_scaled.fit(X_train, y_train)
+acc_with = accuracy_score(y_test, model_scaled.predict(X_test))
+
+model_unscaled = KNeighborsClassifier(n_neighbors=optimal_k)
+model_unscaled.fit(X_train, y_train)
+acc_without = accuracy_score(y_test, model_unscaled.predict(X_test))
+
+print(f"KNN Test Accuracy (K={optimal_k}) WITH scaler:    {acc_with * 100:.2f}%")
+print(f"KNN Test Accuracy (K={optimal_k}) WITHOUT scaler: {acc_without * 100:.2f}%")
+
+# Multi-split evaluation (random_state = 0, 1, 2, 3, 4)
+multi_split_accs = []
+for rs in [0, 1, 2, 3, 4]:
+    Xt_tr, Xt_te, yt_tr, yt_te = train_test_split(
+        X, y_class, test_size=0.2, random_state=rs, stratify=y_class
+    )
+    pipe = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=optimal_k))
+    pipe.fit(Xt_tr, yt_tr)
+    multi_split_accs.append(accuracy_score(yt_te, pipe.predict(Xt_te)))
+
+print(f"Multi-split Test Accuracies (RS 0-4): {[round(a*100, 2) for a in multi_split_accs]}%")
+print(f"Mean Accuracy: {np.mean(multi_split_accs)*100:.2f}% | Spread (Max - Min): {(np.max(multi_split_accs) - np.min(multi_split_accs))*100:.2f}%")
+
+
+print("\n=== Task A6: Decision Tree Classifier Sweep ===")
+depths = [1, 2, 3, 4, 5, 6, 8, None]
+tree_results = []
+
+for d in depths:
+    tree = DecisionTreeClassifier(criterion="entropy", max_depth=d, min_samples_leaf=1, random_state=0)
+    tree.fit(X_train, y_train)
+    tr_acc = accuracy_score(y_train, tree.predict(X_train))
+    te_acc = accuracy_score(y_test, tree.predict(X_test))
+    
+    tree_results.append({
+        "max_depth": str(d),
+        "n_leaves": tree.get_n_leaves(),
+        "Train Acc": round(tr_acc, 4),
+        "Test Acc": round(te_acc, 4)
+    })
+
+df_tree = pd.DataFrame(tree_results)
+print(df_tree.to_string(index=False))
+
+# Plot Decision Tree accuracy vs Depth
+plt.figure(figsize=(8, 5))
+plt.plot([str(d) for d in depths], [r["Train Acc"] for r in tree_results], marker='o', label="Train Accuracy")
+plt.plot([str(d) for d in depths], [r["Test Acc"] for r in tree_results], marker='s', label="Test Accuracy")
+plt.xlabel("Max Depth")
+plt.ylabel("Accuracy")
+plt.title("Decision Tree Accuracy vs. Max Depth")
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.5)
+plt.tight_layout()
+plt.savefig("tree_accuracy_vs_depth.png")
+print("[+] Saved tree_accuracy_vs_depth.png")
+
+# Print top two levels of tree (max_depth=2)
+tree_depth2 = DecisionTreeClassifier(criterion="entropy", max_depth=2, random_state=0)
+tree_depth2.fit(X_train, y_train)
+print("\n--- Top Two Levels of Decision Tree (max_depth=2) ---")
+print(export_text(tree_depth2, feature_names=list(X.columns)))

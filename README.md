@@ -215,3 +215,33 @@ Based on Decision Tree Gini importance (feature_importance.png):
   - With $p = 494$ features for only $n = 804$ training rows, the model severely **overfits**. While Training RMSE drops to a pristine $2.338 \text{ MPa}$, the test error skyrockets (Test RMSE $= 30.165 \text{ MPa}$, Test $R^2 = -2.531$). The model learned noise rather than underlying patterns.
 - **Does Adjusted $R^2$ alone protect you from this?**
   - **No.** Although adjusted $R^2$ applies a penalty for model complexity ($p$), it still evaluates training data only. It cannot predict how a heavily parameterized model will fail when confronted with completely unseen test data. An independent test set split is strictly necessary.
+
+
+  ### 6. Classification: KNN and Decision Tree (Task A6)
+- **Target:** Binary classification predicting whether concrete compressive strength reaches structural grade ($\ge 40 \text{ MPa}$). Stratified 80/20 split used to preserve class balance.
+
+#### **KNN Classifier Results ($K=5$):**
+- **With StandardScaler:** **84.47%** test accuracy
+- **Without StandardScaler:** **78.64%** test accuracy
+- **Why Scaling Matters:** KNN relies on Euclidean distance. Unscaled features with large numerical ranges (such as aggregates) would overwhelm features with smaller numerical ranges (such as superplasticizers or age).
+- **Multi-Split Stability (Random States 0–4):** 
+  - Test Accuracies: `[82.52%, 87.86%, 87.38%, 84.47%, 85.44%]`
+  - **Mean Accuracy:** **85.53%** | **Spread (Max - Min):** **5.34%**
+
+#### **Decision Tree Classifier Sweep:**
+
+| `max_depth` | Number of Leaves | Train Accuracy | Test Accuracy |
+| :---: | :---: | :---: | :---: |
+| **1** | 2 | 0.7464 | 0.7233 |
+| **2** | 4 | 0.7464 | 0.7233 |
+| **3** | 8 | 0.8240 | 0.8010 |
+| **4** | 14 | 0.8653 | 0.8204 |
+| **5** | 24 | 0.8896 | 0.8398 |
+| **6** | 37 | 0.9066 | 0.8447 |
+| **8** | 62 | 0.9672 | 0.8835 |
+| **None** | 86 | 0.9976 | 0.8883 |
+
+- **Depth Selection & Generalization:** As depth increases, training accuracy approaches $99.76\%$, while test accuracy peaks around $88.83\%$ for the unlimited tree. Depths around 5–6 offer a strong balance of accuracy and interpretability.
+- **Top Two Levels of Decision Tree (`max_depth=2`):**
+  - **Root Split:** `age <= 42.00`
+  - **Physical Sense:** **Yes, this makes complete physical sense.** Concrete compressive strength development is fundamentally governed by two primary phases: early hydration curing time (`age`) and the fundamental binding mix proportions (`cement` / `superplasticizer`).
