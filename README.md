@@ -245,3 +245,26 @@ Based on Decision Tree Gini importance (feature_importance.png):
 - **Top Two Levels of Decision Tree (`max_depth=2`):**
   - **Root Split:** `age <= 42.00`
   - **Physical Sense:** **Yes, this makes complete physical sense.** Concrete compressive strength development is fundamentally governed by two primary phases: early hydration curing time (`age`) and the fundamental binding mix proportions (`cement` / `superplasticizer`).
+
+  ### 7. Classification Metrics & Threshold Analysis (Task A7)
+- **Target Threshold:** Concrete compressive strength $\ge 40 \text{ MPa}$.
+- **Saved File:** Metrics table saved to `results/A_metrics.csv`.
+
+#### Model Evaluation Table:
+- **KNN ($K=5$):** TP = 57, FP = 13, FN = 19, TN = 117 | Accuracy = **84.47%**, Precision = **81.43%**, Recall = **75.00%**, $F_1$ = **0.7808**
+- **Decision Tree ($\text{max\_depth}=5$):** TP = 62, FP = 19, FN = 14, TN = 111 | Accuracy = **83.98%**, Precision = **76.54%**, Recall = **81.58%**, $F_1$ = **0.7898**
+
+#### KNN Threshold Analysis:
+- **Threshold 0.3:** TP = 65, FP = 30, FN = 11, TN = 100 | Precision = 0.68, Recall = 0.86
+- **Threshold 0.5:** TP = 57, FP = 13, FN = 19, TN = 117 | Precision = 0.81, Recall = 0.75
+- **Threshold 0.7:** TP = 43, FP = 9, FN = 33, TN = 121 | Precision = 0.83, Recall = 0.57
+- **Threshold 0.9:** TP = 25, FP = 1, FN = 51, TN = 129 | Precision = 0.96, Recall = 0.33
+
+#### Construction Safety & Threshold Selection:
+- **False Negative (FN) Danger:** Predicting concrete meets $\ge 40 \text{ MPa}$ when it actually fails is dangerous on a construction site because it leads to structural instability under load. Recall controls FN occurrences.
+- **Threshold Recommendation:** Lowering the threshold to $t = 0.3$ increases Recall and minimizes False Negatives, ensuring structural safety at the cost of higher False Positives (economic waste).
+
+### 8. Feature Importance & Domain Knowledge (Task A8 & Bonus)
+- **Primary Factors:** Across raw coefficients, standardized coefficients, tree Gini importance, and permutation importance, **cement content** and **curing age** consistently rank as the top two most important predictive features.
+- **Correlation vs. Causality:** High feature importance shows strong predictive association within observational data, but it does not imply that arbitrarily altering a single ingredient will guarantee a proportional strength increase without maintaining correct mix proportions.
+- **Bonus (Domain Physics):** Incorporating domain physics ($\log(\text{age})$ and water-to-binder ratio $w/b$) allows a standard 8-feature linear model to achieve high test performance without requiring complex high-degree polynomial expansions.

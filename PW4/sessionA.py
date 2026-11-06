@@ -10,6 +10,11 @@ from sklearn.neighbors import KNeighborsRegressor, KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier, export_text
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, accuracy_score
 
+import os
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
 # 1. Load data
 df = pd.read_csv("data/concrete.csv")
 print(f"Original dataset shape: {df.shape}")
@@ -251,3 +256,54 @@ tree_depth2 = DecisionTreeClassifier(criterion="entropy", max_depth=2, random_st
 tree_depth2.fit(X_train, y_train)
 print("\n--- Top Two Levels of Decision Tree (max_depth=2) ---")
 print(export_text(tree_depth2, feature_names=list(X.columns)))
+
+
+"""
+PW4 Session A -- Task A7: Metrics that Matter
+"""
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
+
+# 1. Ensure classification models are trained for A7
+knn_model = make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=5))
+knn_model.fit(X_train, y_train)
+
+tree_model = DecisionTreeClassifier(criterion="entropy", max_depth=5, min_samples_leaf=1, random_state=0)
+tree_model.fit(X_train, y_train)
+
+# 2. Define evaluation metric function
+def get_metrics(model, X_te, y_te, threshold=0.5):
+    if hasattr(model, "predict_proba"):
+        probs = model.predict_proba(X_te)[:, 1]
+        preds = (probs >= threshold).astype(int)
+    else:
+        preds = model.predict(X_te)
+    
+    tn, fp, fn, tp = confusion_matrix(y_te, preds, labels=[0, 1]).ravel()
+    acc = accuracy_score(y_te, preds)
+    prec = precision_score(y_te, preds, zero_division=0)
+    rec = recall_score(y_te, preds, zero_division=0)
+    f1 = f1_score(y_te, preds, zero_division=0)
+    return {"TP": tp, "FP": fp, "FN": fn, "TN": tn, "Accuracy": acc, "Precision": prec, "Recall": rec, "F1": f1}
+
+# 3. Compute metrics
+knn_metrics = get_metrics(knn_model, X_test, y_test)
+tree_metrics = get_metrics(tree_model, X_test, y_test)
+
+print("\n=== Task A7: Classification Metrics ==Cumm ===")
+print("KNN Metrics:", knn_metrics)
+print("Tree Metrics:", tree_metrics)
+
+# 4. Save metrics table to results/A_metrics.csv
+os.makedirs("results", exist_ok=True)
+metrics_summary = pd.DataFrame([
+    {"Model": "KNN (K=5)", **knn_metrics},
+    {"Model": "Decision Tree (depth=5)", **tree_metrics}
+])
+metrics_summary.to_csv("results/A_metrics.csv", index=False)
+print("[+] Saved results/A_metrics.csv successfully.")
+
+# 5. Threshold Analysis for KNN
+print("\n--- KNN Threshold Analysis ---")
+for t in [0.3, 0.5, 0.7, 0.9]:
+    m = get_metrics(knn_model, X_test, y_test, threshold=t)
+    print(f"Threshold {t}: TP={m['TP']}, FP={m['FP']}, FN={m['FN']}, TN={m['TN']}, Prec={m['Precision']:.2f}, Rec={m['Recall']:.2f}")
