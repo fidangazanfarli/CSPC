@@ -133,3 +133,36 @@ Normality was tested using Q-Q plots (`distributions.png`)[cite: 83, 85] and for
   - **Cadmium vs. Malignancy:** $r_{\text{controlled}} = -0.2407$ ($p = 0.0857 > 0.05$, **loses statistical significance**).
   - **Benzene vs. Malignancy:** **$r_{\text{controlled}} = 0.6814$** ($p = 2.70 \times 10^{-8} \ll 0.05$, **remains strongly positive and highly significant**).
 - **Causal Reveal:** **Benzene is the true causal agent** driving malignancy. Cadmium only looked guilty because it was heavily confounded by overall industrial pollution. Controlling for the environmental confounder exposed cadmium as innocent and confirmed benzene as the true cause (`chemical_causation.png`).
+
+
+---
+
+## PW4 - Session A: Supervised Machine Learning
+
+### 1. Concrete Dataset Setup & Units (Task A1)
+- **`cement`**: Amount of cement ($\text{kg/m}^3$)
+- **`slag`**: Blast furnace slag ($\text{kg/m}^3$)
+- **`ash`**: Fly ash ($\text{kg/m}^3$)
+- **`water`**: Water ($\text{kg/m}^3$)
+- **`superplastic`**: Superplasticizer ($\text{kg/m}^3$)
+- **`coarse_agg`**: Coarse aggregate ($\text{kg/m}^3$)
+- **`fine_agg`**: Fine aggregate ($\text{kg/m}^3$)
+- **`age`**: Curing time ($\text{days}$)
+- **`strength`**: Compressive strength ($\text{MPa}$, Target variable)
+
+### 2. Regression Performance (Predicting Compressive Strength)
+- **KNN Regressor ($k=5$):** $\text{RMSE} = 8.512 \text{ MPa}$, $R^2 = 0.719$
+- **Decision Tree Regressor ($\text{max\_depth}=5$):** $\text{RMSE} = 9.648 \text{ MPa}$, $R^2 = 0.639$
+- **Conclusion:** KNN performed better for regression due to standard feature scaling, which handles continuous recipe ratios effectively (`regression_fit.png`).
+
+### 3. Classification Performance (Strength Grade $\ge 35 \text{ MPa}$)
+- **KNN Classifier Accuracy:** **83.01%**
+- **Decision Tree Classifier Accuracy:** **82.52%**
+- **Conclusion:** Both classifiers achieve strong accuracy when predicting whether concrete meets the structural $35 \text{ MPa}$ threshold (`confusion_matrix.png`).
+
+### 4. Feature Importance Analysis
+Based on Decision Tree Gini importance (`feature_importance.png`):
+1. **`cement` ($40.99\%$)**: Primary binding ingredient.
+2. **`age` ($34.01\%$)**: Curing time required for chemical hydration.
+3. **`water` ($13.43\%$)**: Controls the water-to-cement ratio.
+- **Key Scientific Finding:** **Cement content and curing age together account for $75\%$ of concrete compressive strength.**
