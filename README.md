@@ -130,7 +130,7 @@ Normality was tested using Q-Q plots (`distributions.png`)[cite: 83, 85] and for
 #### Controlled Confounder Analysis (Task 7)
 - **Identifying the Confounder:** `cadmium` and `pollution_index` are nearly perfectly correlated ($r = 0.9819$), meaning higher industrial pollution environments simply carry higher cadmium levels.
 - **Controlling for Pollution:** When restricting analysis to a narrow band of patients with similar pollution exposure ($\text{pollution\_index} \in [47.5, 52.5]$):
-  - **Cadmium vs. Malignancy:** $r_{\text{controlled}} = -0.2407$ ($p = 0.0857 > 0.05$, **loses statistical significance**).
+  - **Cadmium vs. Malignancy:** **$r_{\text{controlled}} = -0.2407$ ($p = 0.0857 > 0.05$, **loses statistical significance**).
   - **Benzene vs. Malignancy:** **$r_{\text{controlled}} = 0.6814$** ($p = 2.70 \times 10^{-8} \ll 0.05$, **remains strongly positive and highly significant**).
 - **Causal Reveal:** **Benzene is the true causal agent** driving malignancy. Cadmium only looked guilty because it was heavily confounded by overall industrial pollution. Controlling for the environmental confounder exposed cadmium as innocent and confirmed benzene as the true cause (`chemical_causation.png`).
 
